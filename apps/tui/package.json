@@ -1,0 +1,13 @@
+{
+  "name": "@trello-clone/tui",
+  "private": true,
+  "version": "0.1.0",
+  "dependencies": {
+    "@trello-clone/sdk": "0.1.0"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "cli": "node dist/index.js",
+    "tui": "node dist/index.js"
+  }
+}

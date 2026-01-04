@@ -1,0 +1,10 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/sdk" },
+    { "path": "apps/demo" },
+    { "path": "apps/worker" },
+    { "path": "apps/tui" },
+    { "path": "apps/web" }
+  ]
+}

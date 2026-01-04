@@ -3,3 +3,8 @@
 .a5c/creds.env.tmp.*
 .a5c/runs/
 # --- end a5c-ai/o install.sh managed ---
+
+node_modules/
+dist/
+*.tsbuildinfo
+.demo-repo/

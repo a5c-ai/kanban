@@ -1,0 +1,42 @@
+{
+  "name": "trello-clone",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "ci": "npm run format:check && npm run lint && npm run build && npm test",
+    "build": "tsc -b",
+    "demo": "node apps/demo/dist/index.js",
+    "cli": "node apps/tui/dist/index.js",
+    "tui": "node apps/tui/dist/index.js",
+    "web": "node apps/web/dist/index.js",
+    "worker": "node apps/worker/dist/index.js",
+    "test": "node --test packages/sdk/test/ops-stream.test.js packages/sdk/test/rbac.test.js packages/sdk/test/search.test.js packages/sdk/test/card-features.test.js apps/web/test/web-api.test.js apps/tui/test/cli-coverage.test.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "@eslint/js": "^9.18.0",
+    "eslint": "^9.18.0",
+    "eslint-config-prettier": "^9.1.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.10",
+    "prettier": "^3.4.2",
+    "typescript-eslint": "^8.20.0",
+    "typescript": "^5.5.4"
+  },
+  "lint-staged": {
+    "*.{js,cjs,mjs,ts,tsx,json,md}": [
+      "prettier --write"
+    ],
+    "*.{ts,tsx,js,cjs,mjs}": [
+      "eslint --fix"
+    ]
+  }
+}

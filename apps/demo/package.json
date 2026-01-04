@@ -1,0 +1,12 @@
+{
+  "name": "@trello-clone/demo",
+  "private": true,
+  "version": "0.1.0",
+  "dependencies": {
+    "@trello-clone/sdk": "0.1.0"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "demo": "node dist/index.js"
+  }
+}
