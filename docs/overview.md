@@ -1,6 +1,6 @@
 # Distributed trello kanban board clone
 
-a minimal but beatiful and sleek kanban board clone with a backend and a frontend. distributed and decentralized at users' machines based on git.
+a minimal but beatiful and sleek kanban board clone. distributed and decentralized at users' machines based on git.
 
 ## Features
 
