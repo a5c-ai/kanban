@@ -11,7 +11,8 @@
       else if (v === true) node.setAttribute(k, "");
       else if (v !== false && v != null) node.setAttribute(k, String(v));
     }
-    for (const c of children) node.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
+    for (const c of children)
+      node.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
     return node;
   };
 
@@ -54,4 +55,3 @@
     });
   };
 })();
-

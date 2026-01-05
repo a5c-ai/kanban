@@ -38,7 +38,12 @@ export interface KanbanRepoClient {
   renameList(listId: ListId, name: string, actorId: ActorId): Promise<void>;
   moveList(listId: ListId, position: number, actorId: ActorId): Promise<void>;
   createCard(boardId: BoardId, listId: ListId, title: string, actorId: ActorId): Promise<CardId>;
-  moveCard(cardId: CardId, toListId: ListId, position: number | undefined, actorId: ActorId): Promise<void>;
+  moveCard(
+    cardId: CardId,
+    toListId: ListId,
+    position: number | undefined,
+    actorId: ActorId,
+  ): Promise<void>;
   updateCard(
     cardId: CardId,
     patch: { title?: string; description?: string; dueDate?: string | null; labels?: string[] },
@@ -64,7 +69,14 @@ export interface KanbanRepoClient {
     query: string,
   ): Promise<Array<{ cardId: CardId; boardId: BoardId; listId: ListId; title: string }>>;
   getCardHistory(cardId: CardId): Promise<
-    Array<{ ts: string; actorId: ActorId; type: OpType; summary: string; seq: number; opId: string }>
+    Array<{
+      ts: string;
+      actorId: ActorId;
+      type: OpType;
+      summary: string;
+      seq: number;
+      opId: string;
+    }>
   >;
 }
 
@@ -120,7 +132,11 @@ export function createKanbanRepoClient(repoPath: string): KanbanRepoClient {
     async addComment(cardId: CardId, text: string, actorId: ActorId): Promise<void> {
       await addComment({ repoPath: normalized, cardId, text, actorId });
     },
-    async addChecklistItem(cardId: CardId, text: string, actorId: ActorId): Promise<ChecklistItemId> {
+    async addChecklistItem(
+      cardId: CardId,
+      text: string,
+      actorId: ActorId,
+    ): Promise<ChecklistItemId> {
       return addChecklistItem({ repoPath: normalized, cardId, text, actorId });
     },
     async toggleChecklistItem(
@@ -139,7 +155,11 @@ export function createKanbanRepoClient(repoPath: string): KanbanRepoClient {
     ): Promise<void> {
       await renameChecklistItem({ repoPath: normalized, cardId, itemId, text, actorId });
     },
-    async removeChecklistItem(cardId: CardId, itemId: ChecklistItemId, actorId: ActorId): Promise<void> {
+    async removeChecklistItem(
+      cardId: CardId,
+      itemId: ChecklistItemId,
+      actorId: ActorId,
+    ): Promise<void> {
       await removeChecklistItem({ repoPath: normalized, cardId, itemId, actorId });
     },
     async searchCards(query: string) {
@@ -153,7 +173,7 @@ export function createKanbanRepoClient(repoPath: string): KanbanRepoClient {
           return p?.cardId === cardId;
         })
         .map((op) => {
-          const p = op.payload as any;
+          const p = op.payload as Record<string, unknown>;
           const summary = (() => {
             switch (op.type) {
               case "card.created":
@@ -184,9 +204,16 @@ export function createKanbanRepoClient(repoPath: string): KanbanRepoClient {
                 return op.type;
             }
           })();
-          return { ts: op.ts, actorId: op.actorId, type: op.type, summary, seq: op.seq, opId: op.opId };
+          return {
+            ts: op.ts,
+            actorId: op.actorId,
+            type: op.type,
+            summary,
+            seq: op.seq,
+            opId: op.opId,
+          };
         })
-        .sort((a, b) => (a.seq - b.seq) || a.opId.localeCompare(b.opId));
+        .sort((a, b) => a.seq - b.seq || a.opId.localeCompare(b.opId));
       return history;
     },
   };

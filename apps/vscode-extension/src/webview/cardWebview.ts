@@ -222,20 +222,20 @@ export function renderCardHtml(args: {
         vscode.postMessage({ type: 'addComment', text });
       });
 
-      document.querySelectorAll('[data-action=\"toggleChecklist\"]').forEach((el) => {
+      document.querySelectorAll('[data-action="toggleChecklist"]').forEach((el) => {
         el.addEventListener('change', (e) => {
           const itemId = e.target.getAttribute('data-item-id');
           vscode.postMessage({ type: 'toggleChecklist', itemId, checked: !!e.target.checked });
         });
       });
-      document.querySelectorAll('[data-action=\"renameChecklist\"]').forEach((el) => {
+      document.querySelectorAll('[data-action="renameChecklist"]').forEach((el) => {
         el.addEventListener('blur', (e) => {
           const itemId = e.target.getAttribute('data-item-id');
           const text = (e.target.value || '').trim();
           vscode.postMessage({ type: 'renameChecklist', itemId, text });
         });
       });
-      document.querySelectorAll('[data-action=\"removeChecklist\"]').forEach((el) => {
+      document.querySelectorAll('[data-action="removeChecklist"]').forEach((el) => {
         el.addEventListener('click', (e) => {
           const itemId = e.target.getAttribute('data-item-id');
           vscode.postMessage({ type: 'removeChecklist', itemId });
@@ -277,7 +277,13 @@ export class CardWebviewController {
 
     panel.webview.onDidReceiveMessage(async (msg: unknown) => {
       if (!msg || typeof msg !== "object") return;
-      const m = msg as { type?: unknown; patch?: unknown; text?: unknown; itemId?: unknown; checked?: unknown };
+      const m = msg as {
+        type?: unknown;
+        patch?: unknown;
+        text?: unknown;
+        itemId?: unknown;
+        checked?: unknown;
+      };
 
       if (m.type === "refresh") {
         await this.refresh(cardId);
@@ -296,12 +302,20 @@ export class CardWebviewController {
         await this.refresh(cardId);
         await this.onDidMutate();
       }
-      if (m.type === "toggleChecklist" && typeof m.itemId === "string" && typeof m.checked === "boolean") {
+      if (
+        m.type === "toggleChecklist" &&
+        typeof m.itemId === "string" &&
+        typeof m.checked === "boolean"
+      ) {
         await this.toggleChecklistItem(cardId, m.itemId as ChecklistItemId, m.checked);
         await this.refresh(cardId);
         await this.onDidMutate();
       }
-      if (m.type === "renameChecklist" && typeof m.itemId === "string" && typeof m.text === "string") {
+      if (
+        m.type === "renameChecklist" &&
+        typeof m.itemId === "string" &&
+        typeof m.text === "string"
+      ) {
         await this.renameChecklistItem(cardId, m.itemId as ChecklistItemId, m.text);
         await this.refresh(cardId);
         await this.onDidMutate();
@@ -333,7 +347,8 @@ export class CardWebviewController {
       {
         title: typeof patch.title === "string" ? patch.title : undefined,
         description: typeof patch.description === "string" ? patch.description : undefined,
-        dueDate: typeof patch.dueDate === "string" || patch.dueDate === null ? patch.dueDate : undefined,
+        dueDate:
+          typeof patch.dueDate === "string" || patch.dueDate === null ? patch.dueDate : undefined,
         labels: Array.isArray(patch.labels) ? patch.labels.map(String) : undefined,
       },
       actorId,
@@ -347,14 +362,22 @@ export class CardWebviewController {
     await client.addChecklistItem(cardId, text, actorId);
   }
 
-  private async toggleChecklistItem(cardId: CardId, itemId: ChecklistItemId, checked: boolean): Promise<void> {
+  private async toggleChecklistItem(
+    cardId: CardId,
+    itemId: ChecklistItemId,
+    checked: boolean,
+  ): Promise<void> {
     const { client } = this.getClientOrThrow();
     const actorId = await this.getActorId();
     await client.ensureInitialized();
     await client.toggleChecklistItem(cardId, itemId, checked, actorId);
   }
 
-  private async renameChecklistItem(cardId: CardId, itemId: ChecklistItemId, text: string): Promise<void> {
+  private async renameChecklistItem(
+    cardId: CardId,
+    itemId: ChecklistItemId,
+    text: string,
+  ): Promise<void> {
     const { client } = this.getClientOrThrow();
     const actorId = await this.getActorId();
     await client.ensureInitialized();

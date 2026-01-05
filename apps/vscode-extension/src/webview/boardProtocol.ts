@@ -1,11 +1,4 @@
-import type {
-  ActorId,
-  BoardId,
-  CardId,
-  ChecklistItemId,
-  ListId,
-  State,
-} from "@a5c-ai/kanban-sdk";
+import type { ActorId, BoardId, CardId, ChecklistItemId, ListId, State } from "@a5c-ai/kanban-sdk";
 import type { KanbanRepoClient } from "../kanbanRepo";
 import { toErrorMessage } from "../errors";
 
@@ -55,8 +48,20 @@ export type WebviewToExtensionMessage =
       requestId?: string;
     }
   | { type: "addChecklistItem"; cardId: CardId; text: string; requestId?: string }
-  | { type: "toggleChecklistItem"; cardId: CardId; itemId: ChecklistItemId; checked: boolean; requestId?: string }
-  | { type: "renameChecklistItem"; cardId: CardId; itemId: ChecklistItemId; text: string; requestId?: string }
+  | {
+      type: "toggleChecklistItem";
+      cardId: CardId;
+      itemId: ChecklistItemId;
+      checked: boolean;
+      requestId?: string;
+    }
+  | {
+      type: "renameChecklistItem";
+      cardId: CardId;
+      itemId: ChecklistItemId;
+      text: string;
+      requestId?: string;
+    }
   | { type: "removeChecklistItem"; cardId: CardId; itemId: ChecklistItemId; requestId?: string }
   | { type: "addComment"; cardId: CardId; text: string; requestId?: string }
   | { type: "searchCards"; query: string; requestId?: string }
@@ -82,7 +87,14 @@ export type ExtensionToWebviewMessage =
   | {
       type: "cardHistory";
       cardId: CardId;
-      history: Array<{ ts: string; actorId: ActorId; type: string; summary: string; seq: number; opId: string }>;
+      history: Array<{
+        ts: string;
+        actorId: ActorId;
+        type: string;
+        summary: string;
+        seq: number;
+        opId: string;
+      }>;
     };
 
 export type BoardViewMessageHandlerDeps = {
@@ -91,7 +103,10 @@ export type BoardViewMessageHandlerDeps = {
   loadState: () => Promise<State>;
   onDidMutate: () => void;
   postMessage: (msg: ExtensionToWebviewMessage) => void;
-  executeCommand: (command: "kanban.selectRepo" | "kanban.initRepo" | "kanban.openCard", ...args: any[]) => Promise<void>;
+  executeCommand: (
+    command: "kanban.selectRepo" | "kanban.initRepo" | "kanban.openCard",
+    ...args: unknown[]
+  ) => Promise<void>;
 };
 
 function computeReorderPosition(prev?: number, next?: number): number {
@@ -170,11 +185,19 @@ export function createBoardViewMessageHandler(deps: BoardViewMessageHandlerDeps)
     }
   };
 
-  const withOpResult = async (msg: WebviewToExtensionMessage, fn: () => Promise<void>): Promise<void> => {
+  const withOpResult = async (
+    msg: WebviewToExtensionMessage,
+    fn: () => Promise<void>,
+  ): Promise<void> => {
     try {
       await fn();
       if (msg.requestId) {
-        deps.postMessage({ type: "opResult", requestId: msg.requestId, ok: true, operation: msg.type });
+        deps.postMessage({
+          type: "opResult",
+          requestId: msg.requestId,
+          ok: true,
+          operation: msg.type,
+        });
       }
     } catch (error) {
       const message = toErrorMessage(error);
@@ -200,7 +223,13 @@ export function createBoardViewMessageHandler(deps: BoardViewMessageHandlerDeps)
       case "ready":
       case "refresh": {
         await refresh();
-        if (msg.requestId) deps.postMessage({ type: "opResult", requestId: msg.requestId, ok: true, operation: msg.type });
+        if (msg.requestId)
+          deps.postMessage({
+            type: "opResult",
+            requestId: msg.requestId,
+            ok: true,
+            operation: msg.type,
+          });
         return;
       }
       case "selectRepo": {
@@ -294,7 +323,9 @@ export function createBoardViewMessageHandler(deps: BoardViewMessageHandlerDeps)
           await client.ensureInitialized();
           const state = await client.loadState();
           const lists = orderedListsForBoard(state, msg.boardId).filter((l) => l.id !== msg.listId);
-          const beforeIdx = msg.beforeListId ? lists.findIndex((l) => l.id === msg.beforeListId) : -1;
+          const beforeIdx = msg.beforeListId
+            ? lists.findIndex((l) => l.id === msg.beforeListId)
+            : -1;
           const afterIdx = msg.afterListId ? lists.findIndex((l) => l.id === msg.afterListId) : -1;
 
           let prev: number | undefined;
@@ -332,7 +363,9 @@ export function createBoardViewMessageHandler(deps: BoardViewMessageHandlerDeps)
           await client.ensureInitialized();
           const state = await client.loadState();
           const cards = orderedCardsForList(state, msg.toListId).filter((c) => c.id !== msg.cardId);
-          const beforeIdx = msg.beforeCardId ? cards.findIndex((c) => c.id === msg.beforeCardId) : -1;
+          const beforeIdx = msg.beforeCardId
+            ? cards.findIndex((c) => c.id === msg.beforeCardId)
+            : -1;
           const afterIdx = msg.afterCardId ? cards.findIndex((c) => c.id === msg.afterCardId) : -1;
 
           let prev: number | undefined;

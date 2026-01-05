@@ -1,0 +1,78 @@
+name: Publish (npm)
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Git ref to publish (e.g. v1.2.3)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate workflow_dispatch ref
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          case "${{ inputs.ref }}" in
+            v*|refs/tags/v*) ;;
+            *)
+              echo "Input ref must be a v* tag (e.g. v1.2.3 or refs/tags/v1.2.3)"
+              exit 1
+              ;;
+          esac
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.ref || github.ref }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: https://registry.npmjs.org
+
+      - name: Verify tag commit is on main
+        run: |
+          git fetch origin main
+          git merge-base --is-ancestor "$(git rev-parse HEAD)" "origin/main"
+
+      - run: npm ci
+      - run: npm run ci
+
+      - name: Publish workspaces (skip already-published versions)
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          WORKSPACES=(
+            "packages/sdk"
+            "apps/demo"
+            "apps/tui"
+            "apps/web"
+            "apps/worker"
+          )
+
+          for ws in "${WORKSPACES[@]}"; do
+            name="$(node -p "require('./${ws}/package.json').name")"
+            version="$(node -p "require('./${ws}/package.json').version")"
+
+            echo "::group::${name}@${version}"
+            if npm view "${name}@${version}" version --registry https://registry.npmjs.org >/dev/null 2>&1; then
+              echo "Already published: ${name}@${version} (skipping)"
+            else
+              echo "Publishing ${ws} => ${name}@${version}"
+              npm publish -w "${ws}" --registry https://registry.npmjs.org --access public
+            fi
+            echo "::endgroup::"
+          done

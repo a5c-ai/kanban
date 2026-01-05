@@ -1,8 +1,5 @@
 import * as vscode from "vscode";
-import type {
-  BoardId,
-  State,
-} from "@a5c-ai/kanban-sdk";
+import type { BoardId, State } from "@a5c-ai/kanban-sdk";
 import { toErrorMessage } from "../errors";
 import {
   createBoardViewMessageHandler,
@@ -67,22 +64,36 @@ export class KanbanBoardViewProvider implements vscode.WebviewViewProvider {
     if (!this.view) return;
     try {
       const state = await this.loadState();
-      this.view.webview.postMessage({ type: "state", state, activeBoardId } satisfies ExtensionToWebviewMessage);
+      this.view.webview.postMessage({
+        type: "state",
+        state,
+        activeBoardId,
+      } satisfies ExtensionToWebviewMessage);
     } catch (error) {
       this.view.webview.postMessage({
         type: "toast",
         level: "error",
         message: `Failed to load state: ${toErrorMessage(error)}`,
       } satisfies ExtensionToWebviewMessage);
-      this.view.webview.postMessage({ type: "state", state: null, activeBoardId } satisfies ExtensionToWebviewMessage);
+      this.view.webview.postMessage({
+        type: "state",
+        state: null,
+        activeBoardId,
+      } satisfies ExtensionToWebviewMessage);
     }
   }
 
   private renderHtml(webview: vscode.Webview): string {
     const n = nonce();
-    const cssUri = webview.asWebviewUri(vscode.Uri.joinPath(this.ctx.extensionUri, "media", "boardView.css"));
-    const jsUri = webview.asWebviewUri(vscode.Uri.joinPath(this.ctx.extensionUri, "media", "boardView.js"));
-    const domUri = webview.asWebviewUri(vscode.Uri.joinPath(this.ctx.extensionUri, "media", "boardView", "dom.js"));
+    const cssUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this.ctx.extensionUri, "media", "boardView.css"),
+    );
+    const jsUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this.ctx.extensionUri, "media", "boardView.js"),
+    );
+    const domUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this.ctx.extensionUri, "media", "boardView", "dom.js"),
+    );
     const focusUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this.ctx.extensionUri, "media", "boardView", "focus.js"),
     );

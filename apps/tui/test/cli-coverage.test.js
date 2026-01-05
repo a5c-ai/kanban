@@ -66,7 +66,16 @@ test("cli: basic read/list/show commands work (human + json)", () => {
 
   const boardId = run(["--repo", repo, "board", "create", "--name", "Board A"]).stdout.trim();
   assert.ok(boardId.length > 0);
-  const listId = run(["--repo", repo, "list", "create", "--board-id", boardId, "--name", "Todo"]).stdout.trim();
+  const listId = run([
+    "--repo",
+    repo,
+    "list",
+    "create",
+    "--board-id",
+    boardId,
+    "--name",
+    "Todo",
+  ]).stdout.trim();
   assert.ok(listId.length > 0);
   const cardId = run([
     "--repo",

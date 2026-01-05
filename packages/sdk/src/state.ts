@@ -189,21 +189,6 @@ function writesForOp(op: AnyOp): Write[] {
         },
       ];
     }
-    case "list.moved": {
-      const p = op.payload as { listId: string; position: number };
-      return [
-        {
-          entityType: "list",
-          entityId: p.listId,
-          field: "position",
-          value: p.position,
-          opId: op.opId,
-          ts: op.ts,
-          actorId: op.actorId,
-          seq: op.seq,
-        },
-      ];
-    }
     case "member.added":
     case "member.roleChanged": {
       const p = op.payload as { boardId: string; memberId: string; role: string };

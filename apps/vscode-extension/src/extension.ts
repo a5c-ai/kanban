@@ -133,13 +133,12 @@ export function activate(ctx: vscode.ExtensionContext): void {
   const treeProvider = new KanbanTreeProvider(loadState);
   ctx.subscriptions.push(vscode.window.registerTreeDataProvider("kanbanExplorer", treeProvider));
 
-  let boardViewProvider: KanbanBoardViewProvider | undefined;
   const refreshAll = async (): Promise<void> => {
     treeProvider.refresh();
-    await boardViewProvider?.refresh();
+    await boardViewProvider.refresh();
   };
 
-  boardViewProvider = new KanbanBoardViewProvider(
+  const boardViewProvider = new KanbanBoardViewProvider(
     ctx,
     getRepoClientOrThrow,
     async () => getActorId(ctx),
@@ -148,7 +147,9 @@ export function activate(ctx: vscode.ExtensionContext): void {
       void refreshAll();
     },
   );
-  ctx.subscriptions.push(vscode.window.registerWebviewViewProvider("kanbanBoard", boardViewProvider));
+  ctx.subscriptions.push(
+    vscode.window.registerWebviewViewProvider("kanbanBoard", boardViewProvider),
+  );
 
   const cardWebview = new CardWebviewController(
     ctx,

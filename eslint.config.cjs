@@ -33,6 +33,32 @@ module.exports = [
     },
   },
   {
+    files: ["apps/vscode-extension/scripts/**/*.mjs"],
+    languageOptions: {
+      globals: {
+        process: "readonly",
+        console: "readonly",
+      },
+    },
+  },
+  {
+    files: ["apps/vscode-extension/media/**/*.js"],
+    languageOptions: {
+      globals: {
+        window: "readonly",
+        document: "readonly",
+        setTimeout: "readonly",
+        clearTimeout: "readonly",
+        acquireVsCodeApi: "readonly",
+      },
+    },
+    rules: {
+      "no-empty": "off",
+      "no-undef": "off",
+      "no-unused-vars": "off",
+    },
+  },
+  {
     rules: {
       "no-console": "off",
     },

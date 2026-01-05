@@ -3,8 +3,16 @@
   --fg: var(--vscode-editor-foreground);
   --muted: var(--vscode-descriptionForeground);
   --border: color-mix(in srgb, var(--vscode-editor-foreground) 18%, transparent);
-  --cardBg: color-mix(in srgb, var(--vscode-editor-background) 88%, var(--vscode-editor-foreground));
-  --listBg: color-mix(in srgb, var(--vscode-editor-background) 92%, var(--vscode-editor-foreground));
+  --cardBg: color-mix(
+    in srgb,
+    var(--vscode-editor-background) 88%,
+    var(--vscode-editor-foreground)
+  );
+  --listBg: color-mix(
+    in srgb,
+    var(--vscode-editor-background) 92%,
+    var(--vscode-editor-foreground)
+  );
   --shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
   --radius: 12px;
   --radiusSm: 10px;

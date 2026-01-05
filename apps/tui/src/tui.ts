@@ -183,9 +183,7 @@ export async function runTui(argv: string[]): Promise<void> {
             }
           }
 
-          const action = (
-            await prompt(rl, "Members: [a]dd  [r]ole  [enter]refresh  [b]ack > ")
-          )
+          const action = (await prompt(rl, "Members: [a]dd  [r]ole  [enter]refresh  [b]ack > "))
             .toLowerCase()
             .trim();
 

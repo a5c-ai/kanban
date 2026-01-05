@@ -80,4 +80,3 @@ test("vscode-extension: board protocol responds with searchResults and opResult"
     },
   ]);
 });
-

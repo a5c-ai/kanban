@@ -78,42 +78,58 @@
     {
       "id": "F-UI-BoardView",
       "name": "Main Board view webview (Kanban UI)",
-      "verification": [{ "type": "manual", "path": "apps/vscode-extension/VERIFICATION.md#F-UI-BoardView" }]
+      "verification": [
+        { "type": "manual", "path": "apps/vscode-extension/VERIFICATION.md#F-UI-BoardView" }
+      ]
     },
     {
       "id": "F-UI-DragDrop",
       "name": "Drag & drop: reorder lists and move/reorder cards",
-      "verification": [{ "type": "manual", "path": "apps/vscode-extension/VERIFICATION.md#F-UI-DragDrop" }]
+      "verification": [
+        { "type": "manual", "path": "apps/vscode-extension/VERIFICATION.md#F-UI-DragDrop" }
+      ]
     },
     {
       "id": "F-UI-CardDetails",
       "name": "Card details UI: edit fields, archive, checklist, comments, history",
-      "verification": [{ "type": "manual", "path": "apps/vscode-extension/VERIFICATION.md#F-UI-CardDetails" }]
+      "verification": [
+        { "type": "manual", "path": "apps/vscode-extension/VERIFICATION.md#F-UI-CardDetails" }
+      ]
     },
     {
       "id": "F-UI-Search",
       "name": "Search UI in Board view and open results",
-      "verification": [{ "type": "manual", "path": "apps/vscode-extension/VERIFICATION.md#F-UI-Search" }]
+      "verification": [
+        { "type": "manual", "path": "apps/vscode-extension/VERIFICATION.md#F-UI-Search" }
+      ]
     },
     {
       "id": "F-UI-ConflictsInUI",
       "name": "Conflicts surfaced in Board/Card UI",
-      "verification": [{ "type": "manual", "path": "apps/vscode-extension/VERIFICATION.md#F-UI-ConflictsInUI" }]
+      "verification": [
+        { "type": "manual", "path": "apps/vscode-extension/VERIFICATION.md#F-UI-ConflictsInUI" }
+      ]
     },
     {
       "id": "F-OPS-RenameBoardList",
       "name": "Rename board and list via SDK-backed operations",
-      "verification": [{ "type": "test", "path": "apps/vscode-extension/test/sdk-integration.test.js" }]
+      "verification": [
+        { "type": "test", "path": "apps/vscode-extension/test/sdk-integration.test.js" }
+      ]
     },
     {
       "id": "F-OPS-MoveListCard",
       "name": "Move list and move card via SDK-backed operations",
-      "verification": [{ "type": "test", "path": "apps/vscode-extension/test/sdk-integration.test.js" }]
+      "verification": [
+        { "type": "test", "path": "apps/vscode-extension/test/sdk-integration.test.js" }
+      ]
     },
     {
       "id": "F-OPS-ChecklistCommentsHistory",
       "name": "Checklist ops, comments, and card history via SDK-backed operations",
-      "verification": [{ "type": "test", "path": "apps/vscode-extension/test/sdk-integration.test.js" }]
+      "verification": [
+        { "type": "test", "path": "apps/vscode-extension/test/sdk-integration.test.js" }
+      ]
     }
   ]
 }

@@ -220,7 +220,8 @@ export async function runCli(rawArgv: string[]): Promise<number> {
       if (sub !== "init") throw new Error("Usage: repo init");
       const repoPath = requireRepoPath(globals);
       const handle = await initRepo({ path: repoPath, git });
-      if (globals.output === "json") printJson({ repoPath: handle.repoPath, format: handle.format });
+      if (globals.output === "json")
+        printJson({ repoPath: handle.repoPath, format: handle.format });
       else process.stdout.write(`Initialized repo: ${handle.repoPath}\n`);
       return 0;
     }
@@ -304,7 +305,9 @@ export async function runCli(rawArgv: string[]): Promise<number> {
         const { state } = await rebuildState(repoPath);
         const boards = boardList(state);
         if (globals.output === "json") {
-          printJson({ boards: boards.map((b) => ({ id: b.id, name: b.name, listIds: b.listIds })) });
+          printJson({
+            boards: boards.map((b) => ({ id: b.id, name: b.name, listIds: b.listIds })),
+          });
           return 0;
         }
         if (boards.length === 0) {
@@ -385,7 +388,9 @@ export async function runCli(rawArgv: string[]): Promise<number> {
           return 0;
         }
         for (const l of lists) {
-          process.stdout.write(`- ${l.name} (${l.id}) cards=${l.cardIds.length} pos=${l.position}\n`);
+          process.stdout.write(
+            `- ${l.name} (${l.id}) cards=${l.cardIds.length} pos=${l.position}\n`,
+          );
         }
         return 0;
       }
@@ -505,7 +510,9 @@ export async function runCli(rawArgv: string[]): Promise<number> {
           const archived = c.archived ? " [archived]" : "";
           const labels = c.labels?.length ? ` [${c.labels.join(", ")}]` : "";
           const due = c.dueDate ? ` due=${c.dueDate}` : "";
-          process.stdout.write(`- ${c.title} (${c.id}) list=${c.listId}${archived}${labels}${due}\n`);
+          process.stdout.write(
+            `- ${c.title} (${c.id}) list=${c.listId}${archived}${labels}${due}\n`,
+          );
         }
         return 0;
       }
@@ -550,7 +557,8 @@ export async function runCli(rawArgv: string[]): Promise<number> {
             process.stdout.write(`- ${it.checked ? "[x]" : "[ ]"} ${it.text} (${it.id})\n`);
           }
         }
-        if (!includeComments) process.stdout.write(`comments: ${commentsAll.length} (use --include-comments)\n`);
+        if (!includeComments)
+          process.stdout.write(`comments: ${commentsAll.length} (use --include-comments)\n`);
         else {
           process.stdout.write("comments:\n");
           for (const c of comments) {
@@ -620,10 +628,17 @@ export async function runCli(rawArgv: string[]): Promise<number> {
       }
       if (sub === "comment") {
         const action = pos[2];
-        if (action !== "add") throw new Error("Usage: card comment add --card-id <id> --text <text>");
+        if (action !== "add")
+          throw new Error("Usage: card comment add --card-id <id> --text <text>");
         const cardId = readRequiredFlag(argv, "--card-id");
         const text = readRequiredFlag(argv, "--text");
-        const commentId = await addComment({ repoPath, cardId, text, actorId: globals.actorId, git });
+        const commentId = await addComment({
+          repoPath,
+          cardId,
+          text,
+          actorId: globals.actorId,
+          git,
+        });
         if (globals.output === "json") printJson({ commentId });
         else process.stdout.write(`${commentId}\n`);
         return 0;
@@ -647,11 +662,17 @@ export async function runCli(rawArgv: string[]): Promise<number> {
         if (action === "toggle") {
           const itemId = readRequiredFlag(argv, "--item-id");
           const checkedRaw = readRequiredFlag(argv, "--checked");
-          const checked =
-            checkedRaw === "true" ? true : checkedRaw === "false" ? false : undefined;
+          const checked = checkedRaw === "true" ? true : checkedRaw === "false" ? false : undefined;
           if (typeof checked !== "boolean")
             throw new Error(`Invalid --checked: ${checkedRaw} (expected true|false)`);
-          await toggleChecklistItem({ repoPath, cardId, itemId, checked, actorId: globals.actorId, git });
+          await toggleChecklistItem({
+            repoPath,
+            cardId,
+            itemId,
+            checked,
+            actorId: globals.actorId,
+            git,
+          });
           if (globals.output === "json") printJson({ ok: true });
           else process.stdout.write("OK\n");
           return 0;
@@ -659,7 +680,14 @@ export async function runCli(rawArgv: string[]): Promise<number> {
         if (action === "rename") {
           const itemId = readRequiredFlag(argv, "--item-id");
           const text = readRequiredFlag(argv, "--text");
-          await renameChecklistItem({ repoPath, cardId, itemId, text, actorId: globals.actorId, git });
+          await renameChecklistItem({
+            repoPath,
+            cardId,
+            itemId,
+            text,
+            actorId: globals.actorId,
+            git,
+          });
           if (globals.output === "json") printJson({ ok: true });
           else process.stdout.write("OK\n");
           return 0;
@@ -709,7 +737,14 @@ export async function runCli(rawArgv: string[]): Promise<number> {
         const boardId = readRequiredFlag(argv, "--board-id");
         const memberId = readRequiredFlag(argv, "--member-id");
         const role = roleFromString(readRequiredFlag(argv, "--role"));
-        await changeMemberRole({ repoPath, boardId, memberId, role, actorId: globals.actorId, git });
+        await changeMemberRole({
+          repoPath,
+          boardId,
+          memberId,
+          role,
+          actorId: globals.actorId,
+          git,
+        });
         if (globals.output === "json") printJson({ ok: true });
         else process.stdout.write("OK\n");
         return 0;
@@ -745,8 +780,10 @@ export async function runCli(rawArgv: string[]): Promise<number> {
           else {
             process.stdout.write("Git status:\n");
             if (status.branch) process.stdout.write(`- branch: ${status.branch}\n`);
-            if (typeof status.ahead === "number") process.stdout.write(`- ahead: ${status.ahead}\n`);
-            if (typeof status.behind === "number") process.stdout.write(`- behind: ${status.behind}\n`);
+            if (typeof status.ahead === "number")
+              process.stdout.write(`- ahead: ${status.ahead}\n`);
+            if (typeof status.behind === "number")
+              process.stdout.write(`- behind: ${status.behind}\n`);
             process.stdout.write(`- dirty: ${status.dirty ? "yes" : "no"}\n`);
           }
         }
