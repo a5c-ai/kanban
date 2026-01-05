@@ -195,8 +195,20 @@ export function activate(ctx: vscode.ExtensionContext): void {
                   ? boardIdOrNode.boardId
                   : undefined
           ) as BoardId | undefined;
-          if (!boardId) throw new Error("Select a board first.");
-          await boardWebview.open(boardId);
+          if (boardId) {
+            await boardWebview.open(boardId);
+            return;
+          }
+
+          const state = await loadState();
+          const boards = Object.values(state.boards).sort((a, b) => a.name.localeCompare(b.name));
+          if (boards.length === 0) throw new Error("No boards found.");
+          const picked = await vscode.window.showQuickPick(
+            boards.map((b) => ({ label: b.name, description: b.id, id: b.id })),
+            { placeHolder: "Open board…" },
+          );
+          if (!picked) return;
+          await boardWebview.open(picked.id);
         });
       },
     ),

@@ -123,12 +123,18 @@ export class KanbanBoardWebviewController {
 
   async refresh(activeBoardId?: BoardId): Promise<void> {
     if (!this.panel) return;
+    const boardId = activeBoardId ?? this.activeBoardId;
     try {
       const state = await this.loadState();
+      if (boardId && state?.boards?.[boardId]?.name) {
+        this.panel.title = `Kanban: ${state.boards[boardId].name}`;
+      } else {
+        this.panel.title = "Kanban Board";
+      }
       void this.panel.webview.postMessage({
         type: "state",
         state,
-        activeBoardId,
+        activeBoardId: boardId,
       } satisfies ExtensionToWebviewMessage);
     } catch (error) {
       void this.panel.webview.postMessage({
@@ -139,7 +145,7 @@ export class KanbanBoardWebviewController {
       void this.panel.webview.postMessage({
         type: "state",
         state: null,
-        activeBoardId,
+        activeBoardId: boardId,
       } satisfies ExtensionToWebviewMessage);
     }
   }
