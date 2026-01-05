@@ -78,7 +78,7 @@ jobs:
           generate_release_notes: true
 
       - name: Publish to VS Code Marketplace (optional)
-        if: ${{ secrets.VSCE_PAT != '' }}
+        if: env.VSCE_PAT != ''
         working-directory: apps/vscode-extension
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
