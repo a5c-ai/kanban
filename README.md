@@ -1,6 +1,4 @@
-# trello-clone (git-backed kanban)
-
-Minimal npm-workspaces monorepo with a small TypeScript SDK and a Node demo CLI.
+# git-backed agents oriented kanban board
 
 ## Setup
 
