@@ -4,7 +4,7 @@ import { createKanbanRepoClient } from "./kanbanRepo";
 import { toErrorMessage } from "./errors";
 import { resolveRepoPath } from "./repoPath";
 import { buildRootNode, getChildren, type KanbanNode } from "./treeModel";
-import { KanbanBoardViewProvider } from "./webview/boardView";
+import { KanbanBoardWebviewController } from "./webview/boardPanel";
 import { CardWebviewController } from "./webview/cardWebview";
 
 type TreeContextValue = "kanbanRoot" | "kanbanBoard" | "kanbanList" | "kanbanCard";
@@ -36,8 +36,14 @@ class KanbanTreeProvider implements vscode.TreeDataProvider<KanbanNode> {
       if (element.archived) item.iconPath = new vscode.ThemeIcon("archive");
       else item.iconPath = new vscode.ThemeIcon("note");
     } else if (element.kind === "board") {
+      item.command = { command: "kanban.openBoard", title: "Open Board", arguments: [element.id] };
       item.iconPath = new vscode.ThemeIcon("project");
     } else if (element.kind === "list") {
+      item.command = {
+        command: "kanban.openBoard",
+        title: "Open Board",
+        arguments: [element.boardId],
+      };
       item.iconPath = new vscode.ThemeIcon("list-unordered");
     } else {
       item.iconPath = new vscode.ThemeIcon("root-folder");
@@ -133,12 +139,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
   const treeProvider = new KanbanTreeProvider(loadState);
   ctx.subscriptions.push(vscode.window.registerTreeDataProvider("kanbanExplorer", treeProvider));
 
-  const refreshAll = async (): Promise<void> => {
-    treeProvider.refresh();
-    await boardViewProvider.refresh();
-  };
-
-  const boardViewProvider = new KanbanBoardViewProvider(
+  const boardWebview = new KanbanBoardWebviewController(
     ctx,
     getRepoClientOrThrow,
     async () => getActorId(ctx),
@@ -147,9 +148,11 @@ export function activate(ctx: vscode.ExtensionContext): void {
       void refreshAll();
     },
   );
-  ctx.subscriptions.push(
-    vscode.window.registerWebviewViewProvider("kanbanBoard", boardViewProvider),
-  );
+
+  async function refreshAll(): Promise<void> {
+    treeProvider.refresh();
+    await boardWebview.refresh();
+  }
 
   const cardWebview = new CardWebviewController(
     ctx,
@@ -176,6 +179,27 @@ export function activate(ctx: vscode.ExtensionContext): void {
       const err = treeProvider.getLastError();
       if (err) output.appendLine(err);
     }),
+  );
+
+  ctx.subscriptions.push(
+    vscode.commands.registerCommand(
+      "kanban.openBoard",
+      async (boardIdOrNode?: BoardId | KanbanNode) => {
+        await runOrShowError(async () => {
+          const boardId = (
+            typeof boardIdOrNode === "string"
+              ? boardIdOrNode
+              : boardIdOrNode?.kind === "board"
+                ? boardIdOrNode.id
+                : boardIdOrNode?.kind === "list"
+                  ? boardIdOrNode.boardId
+                  : undefined
+          ) as BoardId | undefined;
+          if (!boardId) throw new Error("Select a board first.");
+          await boardWebview.open(boardId);
+        });
+      },
+    ),
   );
 
   ctx.subscriptions.push(

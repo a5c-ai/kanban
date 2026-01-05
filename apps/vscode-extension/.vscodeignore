@@ -1,0 +1,11 @@
+.vscode/**
+src/**
+test/**
+scripts/**
+tsconfig*.json
+*.ts
+*.map
+*.tsbuildinfo
+
+# Never ship tooling
+node_modules/@vscode/vsce/**

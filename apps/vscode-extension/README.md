@@ -8,6 +8,11 @@ Local-first VS Code extension for the git-backed kanban repo format in this mono
 - Open this repo in VS Code and run the extension:
   - `Run and Debug` → `Run Extension` (you may want to add a `.vscode/launch.json`)
 
+## Package (local)
+
+- Build + package a VSIX: `npm run package:vsix -w apps/vscode-extension`
+- Output: `dist/kanban-vscode-extension-<version>.vsix`
+
 ## Verify
 
 - Automated: `npm test`

@@ -63,9 +63,7 @@ jobs:
       - run: npm run ci
 
       - name: Package VSIX
-        working-directory: apps/vscode-extension
-        run: |
-          npx --yes vsce package -o ../../kanban-vscode-extension.vsix
+        run: node apps/vscode-extension/scripts/package-vsix.mjs --out kanban-vscode-extension.vsix
 
       - uses: actions/upload-artifact@v4
         with:
