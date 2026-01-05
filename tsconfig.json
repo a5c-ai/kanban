@@ -3,6 +3,7 @@
   "references": [
     { "path": "packages/sdk" },
     { "path": "apps/demo" },
+    { "path": "apps/vscode-extension" },
     { "path": "apps/worker" },
     { "path": "apps/tui" },
     { "path": "apps/web" }

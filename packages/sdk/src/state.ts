@@ -49,6 +49,51 @@ type Write = {
 
 function writesForOp(op: AnyOp): Write[] {
   switch (op.type) {
+    case "board.renamed": {
+      const p = op.payload as { boardId: string; name: string };
+      return [
+        {
+          entityType: "board",
+          entityId: p.boardId,
+          field: "name",
+          value: p.name,
+          opId: op.opId,
+          ts: op.ts,
+          actorId: op.actorId,
+          seq: op.seq,
+        },
+      ];
+    }
+    case "list.renamed": {
+      const p = op.payload as { listId: string; name: string };
+      return [
+        {
+          entityType: "list",
+          entityId: p.listId,
+          field: "name",
+          value: p.name,
+          opId: op.opId,
+          ts: op.ts,
+          actorId: op.actorId,
+          seq: op.seq,
+        },
+      ];
+    }
+    case "list.moved": {
+      const p = op.payload as { listId: string; position: number };
+      return [
+        {
+          entityType: "list",
+          entityId: p.listId,
+          field: "position",
+          value: p.position,
+          opId: op.opId,
+          ts: op.ts,
+          actorId: op.actorId,
+          seq: op.seq,
+        },
+      ];
+    }
     case "card.updated": {
       const p = op.payload as {
         cardId: string;
@@ -245,6 +290,13 @@ function applyOp(state: State, op: AnyOp): void {
       state.workspaces[workspaceId].boardIds.sort((a, b) => a.localeCompare(b));
       return;
     }
+    case "board.renamed": {
+      const { boardId, name } = op.payload;
+      const board = state.boards[boardId];
+      if (!board) return;
+      board.name = name;
+      return;
+    }
     case "list.created": {
       const { boardId, listId, name, position } = op.payload;
       const board = state.boards[boardId];
@@ -257,6 +309,13 @@ function applyOp(state: State, op: AnyOp): void {
         board.listIds as ListId[],
         (id) => state.lists[id].position,
       );
+      return;
+    }
+    case "list.renamed": {
+      const { listId, name } = op.payload;
+      const list = state.lists[listId];
+      if (!list) return;
+      list.name = name;
       return;
     }
     case "list.moved": {

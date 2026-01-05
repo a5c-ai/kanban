@@ -18,7 +18,9 @@ import { getOpsDir, readRepoFormat } from "./repo";
 
 export type OpType =
   | "board.created"
+  | "board.renamed"
   | "list.created"
+  | "list.renamed"
   | "list.moved"
   | "card.created"
   | "card.moved"
@@ -46,10 +48,12 @@ export type BoardCreatedOp = OpEnvelope<
   "board.created",
   { workspaceId: WorkspaceId; boardId: BoardId; name: string }
 >;
+export type BoardRenamedOp = OpEnvelope<"board.renamed", { boardId: BoardId; name: string }>;
 export type ListCreatedOp = OpEnvelope<
   "list.created",
   { boardId: BoardId; listId: ListId; name: string; position: number }
 >;
+export type ListRenamedOp = OpEnvelope<"list.renamed", { listId: ListId; name: string }>;
 export type ListMovedOp = OpEnvelope<"list.moved", { listId: ListId; position: number }>;
 export type CardCreatedOp = OpEnvelope<
   "card.created",
@@ -106,7 +110,9 @@ export type MemberRoleChangedOp = OpEnvelope<
 
 export type AnyOp =
   | BoardCreatedOp
+  | BoardRenamedOp
   | ListCreatedOp
+  | ListRenamedOp
   | ListMovedOp
   | CardCreatedOp
   | CardMovedOp

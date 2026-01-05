@@ -1,0 +1,10 @@
+{
+  "format": "kanban-git-repo",
+  "formatVersion": 1,
+  "createdAt": "2026-01-05T06:54:56.829Z",
+  "createdBy": {
+    "sdk": "@a5c-ai/kanban-sdk",
+    "sdkVersion": "0.1.0"
+  },
+  "defaultWorkspaceId": "b67af4e3-585c-4f19-819e-aa20fdb32702"
+}

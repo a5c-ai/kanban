@@ -62,6 +62,27 @@ export async function createBoard(args: {
   return boardId;
 }
 
+export async function renameBoard(args: {
+  repoPath: string;
+  boardId: BoardId;
+  name: string;
+  actorId: ActorId;
+  git?: GitAdapter;
+}): Promise<void> {
+  const { state } = await rebuildState(args.repoPath);
+  const board = state.boards[args.boardId];
+  if (!board) throw new Error(`Board not found: ${args.boardId}`);
+  assertCanEditBoard(state, args.boardId, args.actorId);
+
+  await appendOp({
+    repoPath: args.repoPath,
+    type: "board.renamed",
+    actorId: args.actorId,
+    git: args.git,
+    payload: { boardId: args.boardId, name: args.name },
+  });
+}
+
 export async function createList(args: {
   repoPath: string;
   boardId: BoardId;
@@ -88,6 +109,27 @@ export async function createList(args: {
   });
 
   return listId;
+}
+
+export async function renameList(args: {
+  repoPath: string;
+  listId: ListId;
+  name: string;
+  actorId: ActorId;
+  git?: GitAdapter;
+}): Promise<void> {
+  const { state } = await rebuildState(args.repoPath);
+  const list = state.lists[args.listId];
+  if (!list) throw new Error(`List not found: ${args.listId}`);
+  assertCanEditBoard(state, list.boardId, args.actorId);
+
+  await appendOp({
+    repoPath: args.repoPath,
+    type: "list.renamed",
+    actorId: args.actorId,
+    git: args.git,
+    payload: { listId: args.listId, name: args.name },
+  });
 }
 
 export async function moveList(args: {

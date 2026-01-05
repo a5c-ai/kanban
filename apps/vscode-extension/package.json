@@ -1,0 +1,186 @@
+{
+  "name": "kanban-vscode-extension",
+  "displayName": "Kanban",
+  "description": "Kanban is a visual project management tool that helps you manage your projects and tasks.",
+  "publisher": "a5c-ai",
+  "galleryBanner": {
+    "color": "#1e1e1e",
+    "theme": "dark"
+  },
+  "keywords": [
+    "kanban",
+    "project management",
+    "task management"
+  ],
+  "private": true,
+  "version": "0.1.0",
+  "main": "dist/extension.js",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onView:kanbanExplorer",
+    "onView:kanbanBoard",
+    "onCommand:kanban.initRepo",
+    "onCommand:kanban.refresh",
+    "onCommand:kanban.selectRepo",
+    "onCommand:kanban.createBoard",
+    "onCommand:kanban.createList",
+    "onCommand:kanban.createCard",
+    "onCommand:kanban.openCard",
+    "onCommand:kanban.searchCards",
+    "onCommand:kanban.showConflicts"
+  ],
+  "contributes": {
+    "configuration": {
+      "title": "Kanban (Git-backed)",
+      "properties": {
+        "kanban.repoPath": {
+          "type": "string",
+          "default": "",
+          "description": "Filesystem path to the kanban repo root. If empty, uses the first workspace folder."
+        },
+        "kanban.actorId": {
+          "type": "string",
+          "default": "",
+          "description": "Actor id used for local operations. If empty, a stable per-machine id is generated and stored."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "kanban.initRepo",
+        "title": "Kanban: Initialize Repo"
+      },
+      {
+        "command": "kanban.refresh",
+        "title": "Kanban: Refresh"
+      },
+      {
+        "command": "kanban.selectRepo",
+        "title": "Kanban: Select Repo Path"
+      },
+      {
+        "command": "kanban.createBoard",
+        "title": "Kanban: Create Board"
+      },
+      {
+        "command": "kanban.createList",
+        "title": "Kanban: Create List"
+      },
+      {
+        "command": "kanban.createCard",
+        "title": "Kanban: Create Card"
+      },
+      {
+        "command": "kanban.openCard",
+        "title": "Kanban: Open Card"
+      },
+      {
+        "command": "kanban.searchCards",
+        "title": "Kanban: Search Cards"
+      },
+      {
+        "command": "kanban.showConflicts",
+        "title": "Kanban: Show Conflicts"
+      }
+    ],
+    "viewContainers": {
+      "activitybar": [
+        {
+          "id": "kanban",
+          "title": "Kanban",
+          "icon": "media/kanban.svg"
+        }
+      ]
+    },
+    "views": {
+      "kanban": [
+        {
+          "id": "kanbanBoard",
+          "name": "Board"
+        },
+        {
+          "id": "kanbanExplorer",
+          "name": "Explorer"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "kanban.refresh",
+          "when": "view == kanbanBoard",
+          "group": "navigation"
+        },
+        {
+          "command": "kanban.initRepo",
+          "when": "view == kanbanBoard",
+          "group": "navigation"
+        },
+        {
+          "command": "kanban.selectRepo",
+          "when": "view == kanbanBoard",
+          "group": "navigation"
+        },
+        {
+          "command": "kanban.refresh",
+          "when": "view == kanbanExplorer",
+          "group": "navigation"
+        },
+        {
+          "command": "kanban.initRepo",
+          "when": "view == kanbanExplorer",
+          "group": "navigation"
+        },
+        {
+          "command": "kanban.selectRepo",
+          "when": "view == kanbanExplorer",
+          "group": "navigation"
+        },
+        {
+          "command": "kanban.searchCards",
+          "when": "view == kanbanExplorer",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "kanban.createBoard",
+          "when": "view == kanbanExplorer && viewItem == kanbanRoot",
+          "group": "inline"
+        },
+        {
+          "command": "kanban.createList",
+          "when": "view == kanbanExplorer && viewItem == kanbanBoard",
+          "group": "inline"
+        },
+        {
+          "command": "kanban.createCard",
+          "when": "view == kanbanExplorer && viewItem == kanbanList",
+          "group": "inline"
+        },
+        {
+          "command": "kanban.openCard",
+          "when": "view == kanbanExplorer && viewItem == kanbanCard",
+          "group": "inline"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "@a5c-ai/kanban-sdk": "0.1.0",
+    "@vscode/vsce": "^3.7.1"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "package": "vsce package",
+    "check:feature-coverage": "node scripts/check-feature-coverage.mjs"
+  }
+}

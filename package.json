@@ -13,7 +13,7 @@
     "tui": "node apps/tui/dist/index.js",
     "web": "node apps/web/dist/index.js",
     "worker": "node apps/worker/dist/index.js",
-    "test": "node --test packages/sdk/test/ops-stream.test.js packages/sdk/test/rbac.test.js packages/sdk/test/search.test.js packages/sdk/test/card-features.test.js apps/web/test/web-api.test.js apps/tui/test/cli-coverage.test.js",
+    "test": "node --test packages/sdk/test/ops-stream.test.js packages/sdk/test/rbac.test.js packages/sdk/test/search.test.js packages/sdk/test/card-features.test.js apps/web/test/web-api.test.js apps/tui/test/cli-coverage.test.js apps/vscode-extension/test/feature-coverage.test.js apps/vscode-extension/test/tree-model.test.js apps/vscode-extension/test/sdk-integration.test.js apps/vscode-extension/test/board-protocol.test.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier . --write",

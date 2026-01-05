@@ -48,7 +48,7 @@ Example:
   "formatVersion": 1,
   "createdAt": "2026-01-04T18:00:00.000Z",
   "createdBy": {
-    "sdk": "@trello-clone/sdk",
+    "sdk": "@a5c-ai/kanban-sdk",
     "sdkVersion": "0.1.0"
   },
   "defaultWorkspaceId": "uuid"

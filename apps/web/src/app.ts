@@ -24,8 +24,8 @@ import {
   type BoardId,
   type CardId,
   type ListId,
-} from "@trello-clone/sdk";
-import type { GitAdapter } from "@trello-clone/sdk";
+} from "@a5c-ai/kanban-sdk";
+import type { GitAdapter } from "@a5c-ai/kanban-sdk";
 
 export interface WebArgs {
   repoPath: string;

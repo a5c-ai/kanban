@@ -1,6 +1,6 @@
 import path from "node:path";
 import process from "node:process";
-import { createCliGitAdapter } from "@trello-clone/sdk";
+import { createCliGitAdapter } from "@a5c-ai/kanban-sdk";
 import { main, parseArgs } from "./app";
 
 async function run(): Promise<void> {

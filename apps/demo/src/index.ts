@@ -10,7 +10,7 @@ import {
   initRepo,
   moveCard,
   rebuildState,
-} from "@trello-clone/sdk";
+} from "@a5c-ai/kanban-sdk";
 
 function parseArgs(argv: string[]): { repoPath: string } {
   const repoFlagIdx = argv.indexOf("--repo");

@@ -1,0 +1,407 @@
+:root {
+  --bg: var(--vscode-editor-background);
+  --fg: var(--vscode-editor-foreground);
+  --muted: var(--vscode-descriptionForeground);
+  --border: color-mix(in srgb, var(--vscode-editor-foreground) 18%, transparent);
+  --cardBg: color-mix(in srgb, var(--vscode-editor-background) 88%, var(--vscode-editor-foreground));
+  --listBg: color-mix(in srgb, var(--vscode-editor-background) 92%, var(--vscode-editor-foreground));
+  --shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+  --radius: 12px;
+  --radiusSm: 10px;
+  --pad: 12px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--fg);
+  background: var(--bg);
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+.topbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 10;
+}
+
+.topbar .spacer {
+  flex: 1;
+}
+
+.btn {
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 85%, var(--fg));
+  color: var(--fg);
+  padding: 6px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.btn:hover {
+  filter: brightness(1.05);
+}
+.btn.primary {
+  border-color: color-mix(in srgb, var(--vscode-button-background) 85%, var(--fg));
+  background: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+}
+.btn.icon {
+  padding: 6px 9px;
+  width: 36px;
+}
+
+.select {
+  min-width: 220px;
+  max-width: 420px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 90%, var(--fg));
+  color: var(--fg);
+  padding: 6px 10px;
+  border-radius: 10px;
+}
+
+.search {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.search input {
+  width: min(380px, 45vw);
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 90%, var(--fg));
+  color: var(--fg);
+  padding: 6px 10px;
+  border-radius: 10px;
+}
+input[disabled],
+textarea[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.banner {
+  margin: 10px 12px 0;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--vscode-editorWarning-foreground);
+  background: color-mix(in srgb, var(--bg) 80%, var(--vscode-editorWarning-foreground));
+  padding: 10px 12px;
+  border-radius: var(--radiusSm);
+}
+.banner.toast {
+  border-left-color: var(--vscode-editorInfo-foreground);
+  background: color-mix(in srgb, var(--bg) 80%, var(--vscode-editorInfo-foreground));
+}
+.banner.toast.error {
+  border-left-color: var(--vscode-editorError-foreground);
+  background: color-mix(in srgb, var(--bg) 80%, var(--vscode-editorError-foreground));
+}
+.toastActions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+.banner a {
+  color: var(--vscode-textLink-foreground);
+  cursor: pointer;
+}
+
+.board {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  overflow-x: auto;
+  height: calc(100% - 52px);
+  align-items: flex-start;
+}
+
+.list {
+  width: 300px;
+  min-width: 300px;
+  background: var(--listBg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100% - 2px);
+}
+
+.listHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 10px 8px;
+  cursor: grab;
+}
+
+.listHeader h3 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.listHeader input {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 90%, var(--fg));
+  color: var(--fg);
+  padding: 6px 8px;
+  border-radius: 10px;
+}
+
+.listBody {
+  padding: 0 10px 10px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card {
+  background: var(--cardBg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.16);
+}
+.card:hover {
+  filter: brightness(1.03);
+}
+.card:focus,
+.resultRow:focus,
+.listHeader h3:focus {
+  outline: 2px solid var(--vscode-focusBorder);
+  outline-offset: 2px;
+}
+.card[aria-disabled="true"] {
+  opacity: 0.6;
+}
+.cardTitle {
+  font-size: 13px;
+  font-weight: 650;
+  margin: 0 0 6px;
+}
+.cardMeta {
+  font-size: 11px;
+  color: var(--muted);
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.chip {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+
+.addRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.addRow input {
+  flex: 1;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 90%, var(--fg));
+  color: var(--fg);
+  padding: 6px 8px;
+  border-radius: 10px;
+}
+.addRow .btn {
+  padding: 6px 10px;
+}
+
+.listFooter {
+  padding: 0 10px 10px;
+}
+
+.addList {
+  width: 300px;
+  min-width: 300px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--bg) 92%, var(--fg));
+  padding: 12px;
+}
+
+.drawerBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: none;
+  z-index: 50;
+}
+.drawerBackdrop.open {
+  display: block;
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(520px, 92vw);
+  height: 100%;
+  background: var(--bg);
+  border-left: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  padding: 14px 14px 16px;
+  overflow: auto;
+  transform: translateX(100%);
+  transition: transform 120ms ease;
+}
+.drawerBackdrop.open .drawer {
+  transform: translateX(0);
+}
+
+.drawer h2 {
+  margin: 0 0 6px;
+  font-size: 16px;
+}
+.muted {
+  color: var(--muted);
+  font-size: 12px;
+}
+.field {
+  margin-top: 12px;
+}
+.field label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.field input[type="text"],
+.field textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 90%, var(--fg));
+  color: var(--fg);
+  padding: 8px 10px;
+  border-radius: 10px;
+}
+.field textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.row .btn {
+  white-space: nowrap;
+}
+
+.section {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.section h3 {
+  margin: 0 0 10px;
+  font-size: 13px;
+}
+
+.checklistItem,
+.commentItem,
+.historyItem {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  background: color-mix(in srgb, var(--bg) 92%, var(--fg));
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.checklistItem input[type="text"] {
+  flex: 1;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 90%, var(--fg));
+  color: var(--fg);
+  padding: 6px 8px;
+  border-radius: 10px;
+}
+.commentItem pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: inherit;
+}
+.historyItem {
+  flex-direction: column;
+  gap: 4px;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  z-index: 60;
+  background: rgba(0, 0, 0, 0.35);
+}
+.overlay.open {
+  display: block;
+}
+.overlayPanel {
+  position: absolute;
+  top: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(780px, 92vw);
+  max-height: calc(100% - 96px);
+  overflow: auto;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px;
+}
+
+.resultRow {
+  padding: 10px 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  background: color-mix(in srgb, var(--bg) 92%, var(--fg));
+  margin-top: 8px;
+}
+.resultRow[aria-selected="true"] {
+  border-color: var(--vscode-focusBorder);
+}
+.resultRow:hover {
+  filter: brightness(1.03);
+}
+.resultRow .muted {
+  margin-top: 4px;
+}

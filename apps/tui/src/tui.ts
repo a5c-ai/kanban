@@ -22,7 +22,7 @@ import {
   updateCard,
   type Card,
   type MemberRole,
-} from "@trello-clone/sdk";
+} from "@a5c-ai/kanban-sdk";
 import { boardList, cardsForBoard, listList, printState } from "./state-print";
 
 function parseRepoArg(argv: string[]): { repoPath: string } {

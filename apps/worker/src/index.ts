@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import https from "node:https";
 import path from "node:path";
 import process from "node:process";
-import { initRepo, loadOps, subscribeOps, type AnyOp } from "@trello-clone/sdk";
+import { initRepo, loadOps, subscribeOps, type AnyOp } from "@a5c-ai/kanban-sdk";
 
 type SecretRef = { secretRef: string };
 type HeaderValue = string | SecretRef;

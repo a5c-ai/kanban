@@ -1,5 +1,5 @@
 import process from "node:process";
-import type { Board, Card, List, State } from "@trello-clone/sdk";
+import type { Board, Card, List, State } from "@a5c-ai/kanban-sdk";
 
 export function printState(state: State): void {
   const ws = state.workspaces[state.defaultWorkspaceId];
@@ -67,4 +67,3 @@ export function cardsForBoard(state: State, board: Board): Card[] {
   }
   return cards;
 }
-

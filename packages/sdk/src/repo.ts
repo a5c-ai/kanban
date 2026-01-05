@@ -8,7 +8,7 @@ export interface RepoFormat {
   formatVersion: 1;
   createdAt: string;
   createdBy: {
-    sdk: "@trello-clone/sdk";
+    sdk: "@a5c-ai/kanban-sdk";
     sdkVersion: string;
   };
   defaultWorkspaceId: WorkspaceId;
@@ -90,7 +90,7 @@ export async function initRepo(args: InitRepoArgs): Promise<RepoHandle> {
       formatVersion: 1,
       createdAt: new Date().toISOString(),
       createdBy: {
-        sdk: "@trello-clone/sdk",
+        sdk: "@a5c-ai/kanban-sdk",
         sdkVersion: args.sdkVersion ?? "0.1.0",
       },
       defaultWorkspaceId: newId(),
