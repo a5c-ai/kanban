@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import process from "node:process";
 import { runCli } from "./cli";
 import { runTui } from "./tui";
@@ -31,19 +32,54 @@ function decideMode(argv: string[]): "cli" | "tui" {
   return "tui";
 }
 
-async function main(): Promise<void> {
+function isUsageErrorMessage(message: string): boolean {
+  return (
+    message.startsWith("Usage:") ||
+    message.startsWith("Missing required flag:") ||
+    message.startsWith("Missing --repo") ||
+    message.startsWith("Missing command.")
+  );
+}
+
+function errorMessage(err: unknown): string {
+  if (err instanceof Error && typeof err.message === "string" && err.message) return err.message;
+  return String(err);
+}
+
+function writeStderr(text: string): Promise<void> {
+  return new Promise((resolve) => {
+    process.stderr.write(text, () => resolve());
+  });
+}
+
+async function main(): Promise<number> {
   const argv = process.argv.slice(2);
   const mode = decideMode(argv);
 
   if (mode === "cli") {
-    const code = await runCli(argv);
-    process.exit(code);
+    return await runCli(argv);
   }
 
-  await runTui(argv);
+  try {
+    await runTui(argv);
+    return 0;
+  } catch (err) {
+    const message = errorMessage(err);
+    if (isUsageErrorMessage(message)) {
+      await writeStderr(`${message}\n`);
+      await runCli(["--help"]);
+      return 2;
+    }
+    await writeStderr(`${message}\n`);
+    return 1;
+  }
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+main()
+  .then((code) => {
+    process.exitCode = code;
+  })
+  .catch((err) => {
+    process.stderr.write(`${errorMessage(err)}\n`);
+    process.exitCode = 1;
+  });

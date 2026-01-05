@@ -85,14 +85,20 @@ function printJson(obj: unknown): void {
   process.stdout.write(JSON.stringify(obj, null, 2) + "\n");
 }
 
+function writeStdout(text: string): Promise<void> {
+  return new Promise((resolve) => {
+    process.stdout.write(text, () => resolve());
+  });
+}
+
 function usage(): string {
   return [
-    "kanban (from apps/tui)",
+    "kanban-tui",
     "",
     "Usage:",
-    "  node apps/tui/dist/index.js --repo <path> <command> [subcommand] [flags]",
-    "  node apps/tui/dist/index.js <repoPath> <command> [subcommand] [flags]",
-    "  node apps/tui/dist/index.js --repo <path>            # interactive TUI",
+    "  kanban-tui --repo <path> <command> [subcommand] [flags]",
+    "  kanban-tui <repoPath> <command> [subcommand] [flags]",
+    "  kanban-tui --repo <path>            # interactive TUI",
     "",
     "Global flags:",
     "  --repo <path>          Repo path (or use positional repoPath before command)",
@@ -196,7 +202,7 @@ function roleFromString(raw: string): MemberRole {
 export async function runCli(rawArgv: string[]): Promise<number> {
   const help = rawArgv.includes("--help") || rawArgv.includes("-h") || rawArgv[0] === "help";
   if (help) {
-    process.stdout.write(usage());
+    await writeStdout(usage());
     return 0;
   }
 

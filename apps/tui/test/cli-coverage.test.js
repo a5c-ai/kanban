@@ -17,6 +17,35 @@ function run(args, opts = {}) {
   };
 }
 
+function runCmd(bin, args, opts = {}) {
+  const res = spawnSync(bin, args, {
+    encoding: "utf-8",
+    shell: process.platform === "win32",
+    ...opts,
+  });
+  const code = typeof res.status === "number" ? res.status : res.error ? 1 : 0;
+  const errorText = res.error ? `\n${String(res.error)}` : "";
+  return {
+    code,
+    stdout: res.stdout ?? "",
+    stderr: (res.stderr ?? "") + errorText,
+  };
+}
+
+function toolBin(name) {
+  return name;
+}
+
+function quietNpmEnv() {
+  return {
+    ...process.env,
+    npm_config_audit: "false",
+    npm_config_fund: "false",
+    npm_config_update_notifier: "false",
+    npm_config_loglevel: "silent",
+  };
+}
+
 function mkTmpDir() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "kanban-cli-"));
   return dir;
@@ -54,6 +83,24 @@ test("cli: help includes expected commands", () => {
     "git status|fetch|pull|push|sync",
   ];
   for (const line of expected) assert.ok(stdout.includes(line), `missing from help: ${line}`);
+});
+
+test("npx: package + explicit bin forms print usage", () => {
+  const pkgPath = path.join(process.cwd(), "apps", "tui");
+
+  {
+    const res = runCmd(toolBin("npx"), ["-y", pkgPath, "help"], { env: quietNpmEnv() });
+    assert.equal(res.code, 0, res.stderr);
+    assert.ok(res.stdout.includes("Usage:"), "expected usage on stdout");
+  }
+
+  {
+    const res = runCmd(toolBin("npx"), ["-y", "-p", pkgPath, "kanban-tui", "help"], {
+      env: quietNpmEnv(),
+    });
+    assert.equal(res.code, 0, res.stderr);
+    assert.ok(res.stdout.includes("Usage:"), "expected usage on stdout");
+  }
 });
 
 test("cli: basic read/list/show commands work (human + json)", () => {
@@ -164,4 +211,12 @@ test("cli: usage errors return exit code 2", () => {
     const res = run(["--repo", repo, "list", "create"]);
     assert.equal(res.code, 2);
   }
+});
+
+test("bin: missing --repo prints friendly error + usage (no stack trace)", () => {
+  const res = run([]);
+  assert.equal(res.code, 2);
+  assert.ok(res.stderr.includes("Missing --repo"), "expected missing --repo message");
+  assert.ok(res.stdout.includes("Usage:"), "expected usage on stdout");
+  assert.ok(!res.stderr.includes("\n    at "), `unexpected stack trace:\n${res.stderr}`);
 });

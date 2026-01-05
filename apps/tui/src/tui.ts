@@ -40,7 +40,7 @@ function parseRepoArg(argv: string[]): { repoPath: string } {
   const positional = argv.find((a) => !a.startsWith("-"));
   if (positional) return { repoPath: path.resolve(positional) };
 
-  throw new Error("Usage: npm run tui -- --repo <path>");
+  throw new Error("Missing --repo <path> (or provide positional repoPath).");
 }
 
 function prompt(rl: readline.Interface, question: string): Promise<string> {
